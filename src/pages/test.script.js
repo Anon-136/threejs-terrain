@@ -2,10 +2,10 @@
 
 import * as THREE from 'three'
 
-import Stats from './libs/stats.module'
+import Stats from 'three/examples/jsm/libs/stats.module'
 
-import { OrbitControls } from './libs/controls/OrbitControls.js'
-import { ImprovedNoise } from './libs/math/ImprovedNoise.js'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { ImprovedNoise } from 'three/examples/jsm/math/ImprovedNoise.js'
 
 export function init() {
   let container, stats

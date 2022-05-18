@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
-import { init } from '../script1'
+import { init } from './test.script'
 
-export default function Home() {
+export default function test() {
   useEffect(() => {
     init()
   }, [])

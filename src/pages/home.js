@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { init } from '../script'
+import { init } from './home.script'
 
 export default function Home() {
   useEffect(() => {
