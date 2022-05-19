@@ -1,6 +1,6 @@
 import * as THREE from 'three'
-import Stats from '../stats.module'
-import { WEBGL } from '../WebGL'
+import Stats from 'three/examples/jsm/libs/stats.module'
+import { WEBGL } from 'three/examples/jsm/WebGL'
 
 function getImageData() {
   const canvas = document.createElement('canvas')
@@ -24,60 +24,55 @@ function getPixel(imagedata, x, y) {
   }
 }
 
-class Graphics {
-  constructor() {}
-
-  initialize() {
-    if (!WEBGL.isWebGL2Available()) {
-      return false
-    }
-
-    // Create WebGL renderer
-    this.renderer = new THREE.WebGLRenderer({ antialias: true })
-    this.renderer.setPixelRatio(window.devicePixelRatio)
-    this.renderer.setSize(window.innerWidth, window.innerHeight)
-
-    // Add three.js renderer to cantainer
-    const container = document.getElementById('container')
-    container.innerHTML = ''
-    container.appendChild(this.renderer.domElement)
-
-    // Create Stats element to show fps
-    this.stats = new Stats()
-
-    window.addEventListener('resize', this.onWindowResize)
-
-    const fov = 60
-    const aspect = 1920 / 1080
-    const near = 0.1
-    const far = 10000.0
-    this.camera = new THREE.PerspectiveCamera(fov, aspect, near, far)
-    this.camera.position.x = 0
-    this.camera.position.y = 0
-    this.camera.position.z = 2
-
-    this.scene = new THREE.Scene()
-    this.scene.background = new THREE.Color(0xbfd1e5)
+function useGraphics() {
+  if (!WEBGL.isWebGL2Available()) {
+    return false
   }
 
-  update() {
-    this.renderer.render(this.scene, this.camera)
-    this.stats.update()
+  // Create WebGL renderer
+  const renderer = new THREE.WebGLRenderer({ antialias: true })
+  renderer.setPixelRatio(window.devicePixelRatio)
+  renderer.setSize(window.innerWidth, window.innerHeight)
+
+  // Add three.js renderer to cantainer
+  const container = document.getElementById('container')
+  container.innerHTML = ''
+  container.appendChild(renderer.domElement)
+
+  // Create Stats element to show fps
+  const stats = new Stats()
+
+  const fov = 60
+  const aspect = 1920 / 1080
+  const near = 0.1
+  const far = 10000.0
+  const camera = new THREE.PerspectiveCamera(fov, aspect, near, far)
+  camera.position.set(75, 20, 0)
+
+  const scene = new THREE.Scene()
+  scene.background = new THREE.Color(0xaaaaaa)
+
+  const graphicsUpdate = () => {
+    renderer.render(scene, camera)
+    stats.update()
   }
 
-  onWindowResize() {
+  const onWindowResize = () => {
     // Update camera
-    this.camera.aspect = window.innerWidth / window.innerHeight
-    this.camera.updateProjectionMatrix()
+    camera.aspect = window.innerWidth / window.innerHeight
+    camera.updateProjectionMatrix()
 
     // Update renderer
-    this.renderer.setSize(window.innerWidth, window.innerHeight)
-    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    renderer.setSize(window.innerWidth, window.innerHeight)
+  }
+
+  window.addEventListener('resize', onWindowResize)
+
+  return {
+    scene,
+    camera,
+    renderer,
+    graphicsUpdate,
   }
 }
-
-module.exports = {
-  Graphics,
-  getImageData,
-  getPixel,
-}
+export { useGraphics, getImageData, getPixel }

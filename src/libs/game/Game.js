@@ -1,57 +1,43 @@
 import * as THREE from 'three'
-// import { GUI } from '../dat.gui.module'
-import { OrbitControls } from '../controls/OrbitControls'
-import { Graphics } from '../graphics/graphics.js'
+import { Scene } from 'three'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { useGraphics } from '../graphics/graphics'
 
-class Game {
-  constructor() {
-    this.initialize()
+const defaultState = {}
+
+function useGame(OnInitailize) {
+  const graphics = useGraphics()
+
+  if (!graphics) {
+    alert('WebGL2 is not available')
+    return defaultState
   }
 
-  initialize() {
-    this.graphics = new Graphics()
-    if (this.graphics.initialize()) {
-      this.displayError('WebGL2 is not available')
-      return
-    }
+  const { scene, camera, renderer, graphicsUpdate } = graphics
 
-    // Create control
-    const controls = new OrbitControls(
-      this.graphics.camera,
-      this.graphics.renderer.domElement
-    )
+  // Create control
+  const controls = new OrbitControls(camera, renderer.domElement)
 
+  controls.update()
+
+  function tick() {
+    // Update Orbital Controls
     controls.update()
-    this.controls = controls
 
-    // // Create GUI
-    // this.guiParams = {
-    //   general: {},
-    // }
+    // Update scene
+    graphicsUpdate()
 
-    // this.gui = new GUI()
-    // this.gui.addFolder('General')
-    // this.gui.close()
-
-    this.tick()
+    // Call tick again on the next frame
+    requestAnimationFrame(tick)
   }
 
-  displayError(errorText) {
-    alert(errorText)
-  }
+  OnInitailize(scene)
+  tick()
 
-  tick() {
-    if (this) {
-      // Update Orbital Controls
-      this.controls.update()
-
-      // Update scene
-      this.graphics.update()
-
-      // Call tick again on the next frame
-      requestAnimationFrame(this.tick)
-    }
+  return {
+    scene,
+    renderer,
   }
 }
 
-export default Game
+export default useGame
