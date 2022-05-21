@@ -47,7 +47,7 @@ function createGraphics() {
   const near = 0.1
   const far = 10000.0
   const camera = new THREE.PerspectiveCamera(fov, aspect, near, far)
-  camera.position.set(75, 20, 0)
+  camera.position.set(75, 50, 0)
 
   const scene = new THREE.Scene()
   //scene.background = new THREE.Color(0xaaaaaa)
