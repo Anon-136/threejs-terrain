@@ -41,6 +41,7 @@ function createGraphics() {
 
   // Create Stats element to show fps
   const stats = new Stats()
+  container.appendChild(stats.dom)
 
   const fov = 60
   const aspect = 1920 / 1080

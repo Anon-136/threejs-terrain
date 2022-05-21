@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 import Home from './pages/home'
 import Test from './pages/test'
 import BasicPlane from './pages/basic_plane'
+import Elevation from './pages/elevation'
 
 export default function App() {
   return (
@@ -20,8 +21,9 @@ export default function App() {
         </nav> */}
         <Routes>
           <Route path="/test" element={<Test />} />
+          <Route path="/basic-plane" element={<BasicPlane />} />
+          <Route path="/elevation" element={<Elevation />} />
           <Route path="/" exact element={<Home />} />
-          <Route path="/basic-plane" exact element={<BasicPlane />} />
         </Routes>
       </div>
     </Router>

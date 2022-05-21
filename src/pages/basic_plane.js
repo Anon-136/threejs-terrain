@@ -30,7 +30,6 @@ export default function BasicPlane() {
 
     // Create control
     const controls = new OrbitControls(game.camera, game.renderer.domElement)
-
     controls.update()
 
     // Objects
