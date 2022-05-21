@@ -24,7 +24,7 @@ function getPixel(imagedata, x, y) {
   }
 }
 
-function useGraphics() {
+function createGraphics() {
   if (!WEBGL.isWebGL2Available()) {
     return false
   }
@@ -75,4 +75,4 @@ function useGraphics() {
     graphicsUpdate,
   }
 }
-export { useGraphics, getImageData, getPixel }
+export { createGraphics, getImageData, getPixel }

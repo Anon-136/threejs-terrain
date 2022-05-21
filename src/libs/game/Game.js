@@ -1,12 +1,12 @@
 import * as THREE from 'three'
 import { Scene } from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import { useGraphics } from '../graphics/graphics'
+import { createGraphics } from '../graphics/graphics'
 
 const defaultState = {}
 
-function useGame(OnInitailize) {
-  const graphics = useGraphics()
+function createGame(OnInitailize) {
+  const graphics = createGraphics()
 
   if (!graphics) {
     alert('WebGL2 is not available')
@@ -40,4 +40,4 @@ function useGame(OnInitailize) {
   }
 }
 
-export default useGame
+export default createGame
