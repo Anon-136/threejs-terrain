@@ -68,7 +68,7 @@ function createGraphics() {
     scene.add(light)
   }
 
-  const graphicsUpdate = () => {
+  const graphicsUpdate = (timeInSeconds) => {
     renderer.render(scene, camera)
     stats.update()
   }
