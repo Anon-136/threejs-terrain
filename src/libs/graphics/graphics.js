@@ -50,7 +50,23 @@ function createGraphics() {
   camera.position.set(75, 20, 0)
 
   const scene = new THREE.Scene()
-  scene.background = new THREE.Color(0xaaaaaa)
+  //scene.background = new THREE.Color(0xaaaaaa)
+
+  createLights()
+
+  function createLights() {
+    let light = new THREE.DirectionalLight(0x808080, 1, 100)
+    light.position.set(-100, 100, -100)
+    light.target.position.set(0, 0, 0)
+    light.castShadow = false
+    scene.add(light)
+
+    light = new THREE.DirectionalLight(0x404040, 1, 100)
+    light.position.set(100, 100, -100)
+    light.target.position.set(0, 0, 0)
+    light.castShadow = false
+    scene.add(light)
+  }
 
   const graphicsUpdate = () => {
     renderer.render(scene, camera)
