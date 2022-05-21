@@ -1,6 +1,10 @@
+// React
 import { useEffect } from 'react'
-import useGame from '../libs/game/Game'
+// Threejs
 import * as THREE from 'three'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+// Custom libraries
+import createGame from '../libs/game/Game'
 
 function createSky() {
   const loader = new THREE.CubeTextureLoader()
@@ -19,44 +23,50 @@ function createSky() {
 
 export default function BasicPlane() {
   const worldWidth = 256,
-    worldDepth = 256,
-    worldHalfWidth = worldWidth / 2,
-    worldHalfDepth = worldDepth / 2
+    worldDepth = 256
 
   useEffect(() => {
-    const onInitialize = (scene) => {
-      // Objects
-      const geometry = new THREE.PlaneGeometry(
-        500,
-        500,
-        worldWidth - 1,
-        worldDepth - 1
-      )
-      geometry.rotateX(-Math.PI / 2)
+    const game = createGame()
 
-      // Materials
+    // Create control
+    const controls = new OrbitControls(game.camera, game.renderer.domElement)
 
-      const material = new THREE.MeshStandardMaterial({
-        wireframe: true,
-        color: 0xffffff,
-        side: THREE.FrontSide,
-        vertexColors: THREE.VertexColors,
-      })
+    controls.update()
 
-      // Mesh
-      const plane = new THREE.Mesh(geometry, material)
-      plane.castShadow = false
-      plane.receiveShadow = true
+    // Objects
+    const geometry = new THREE.PlaneGeometry(
+      500,
+      500,
+      worldWidth - 1,
+      worldDepth - 1
+    )
+    geometry.rotateX(-Math.PI / 2)
 
-      scene.add(plane)
+    // Materials
+    const material = new THREE.MeshStandardMaterial({
+      wireframe: true,
+      color: 0xffffff,
+      side: THREE.FrontSide,
+      vertexColors: THREE.VertexColors,
+    })
 
-      // create sky
-      const texture = createSky()
-      scene.background = texture
-    }
+    // Mesh
+    const plane = new THREE.Mesh(geometry, material)
+    plane.castShadow = false
+    plane.receiveShadow = true
 
-    // send callback with scene as a paramater to useGame()
-    useGame(onInitialize)
+    game.scene.add(plane)
+
+    // create sky
+    const texture = createSky()
+    game.scene.background = texture
+
+    game.start((timeInSeconds) => {
+      controls.update()
+      /**
+        Add code to update game objects below here
+       */
+    })
   }, [])
 
   return <div id="container" />

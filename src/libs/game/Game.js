@@ -1,11 +1,11 @@
 import * as THREE from 'three'
-import { Scene } from 'three'
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { createGraphics } from '../graphics/graphics'
 
 const defaultState = {}
 
-function createGame(OnInitailize) {
+// OnInitialize callback to call when scene is being created
+// OnStep callback to call in each frame
+function createGame() {
   const graphics = createGraphics()
 
   if (!graphics) {
@@ -15,28 +15,43 @@ function createGame(OnInitailize) {
 
   const { scene, camera, renderer, graphicsUpdate } = graphics
 
-  // Create control
-  const controls = new OrbitControls(camera, renderer.domElement)
+  let previousRAF = null
+  let onStep = null
+  const minFrameTime = 1.0 / 10.0
 
-  controls.update()
-
-  function tick() {
-    // Update Orbital Controls
-    controls.update()
-
-    // Update scene
-    graphicsUpdate()
-
-    // Call tick again on the next frame
-    requestAnimationFrame(tick)
+  function start(updateCallback) {
+    onStep = updateCallback
+    // execute game loop
+    tick()
   }
 
-  OnInitailize(scene)
-  tick()
+  function tick() {
+    requestAnimationFrame((t) => {
+      if (previousRAF === null) {
+        previousRAF = t
+      }
+      render(t - previousRAF)
+      previousRAF = t
+    })
+  }
+
+  function render(timeInMS) {
+    const timeInSeconds = Math.min(timeInMS * 0.001, minFrameTime)
+
+    onStep(timeInSeconds)
+
+    // Update scene
+    graphicsUpdate(timeInSeconds)
+
+    // Call tick again on the next frame
+    tick()
+  }
 
   return {
     scene,
     renderer,
+    camera,
+    start,
   }
 }
 
