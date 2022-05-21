@@ -16,8 +16,7 @@
     "three": "^0.126.0"
   },
   "devDependencies": {
-    "eslint": "8.15.0",
-    "eslint-config-next": "12.1.6"
+    "eslint": "8.15.0"
   },
   "browserslist": {
     "production": [
