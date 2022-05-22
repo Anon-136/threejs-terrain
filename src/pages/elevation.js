@@ -25,11 +25,12 @@ export default function Elevation() {
 
     const options = {
       octaves: 5,
-      scale: 300,
-      height: 300,
+      scale: 50,
+      height: 100,
       gap: 2,
       exp: 1,
       persistence: 1,
+      noiseType: 'perlin',
     }
     // Generate height map
     const vertices = geometry.getAttribute('position')
@@ -45,7 +46,7 @@ export default function Elevation() {
     const gui = new GUI()
     const terrainFolder = gui.addFolder('Terrain')
     terrainFolder.add(options, 'height').min(0).max(500).onChange(generate)
-    terrainFolder.add(options, 'exp').min(0).max(2).onChange(generate)
+    terrainFolder.add(options, 'exp').min(0).max(5).onChange(generate)
     terrainFolder.add(options, 'scale').min(1).max(1000).onChange(generate)
     terrainFolder.add(options, 'gap').min(0).max(10).onChange(generate)
     terrainFolder.add(options, 'persistence').min(0).max(10).onChange(generate)
@@ -54,6 +55,12 @@ export default function Elevation() {
       .min(1)
       .max(10)
       .step(1)
+      .onChange(generate)
+    terrainFolder
+      .add(options, 'noiseType', {
+        perlin: 'perlin',
+        simplex: 'simplex',
+      })
       .onChange(generate)
 
     // Materials

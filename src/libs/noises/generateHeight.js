@@ -1,4 +1,14 @@
-import { ImprovedNoise } from 'three/examples/jsm/math/ImprovedNoise.js'
+/*
+ * https://github.com/simondevyoutube/ProceduralTerrain_Part3/blob/master/src/noise.js
+ * https://www.youtube.com/watch?v=U9q-jM3-Phc&list=PLRL3Z3lpLmH3PNGZuDNf2WXnLTHpN9hXy&index=2
+ */
+
+import { perlin3, simplex3 } from '.'
+
+const generator = {
+  perlin: perlin3,
+  simplex: simplex3,
+}
 
 export function generateHeight(width, depth, options = {}) {
   const {
@@ -9,10 +19,10 @@ export function generateHeight(width, depth, options = {}) {
     gap = 1,
     exp = 1,
     persistence = 1,
+    noiseType = 'perlin',
   } = options
   const size = width * depth
-  const data = new Uint16Array(size)
-  const perlin = new ImprovedNoise()
+  const data = new Float32Array(size)
   const g = Math.pow(2, -persistence)
   for (let i = 0; i < size; i++) {
     let amplitude = 1
@@ -21,18 +31,18 @@ export function generateHeight(width, depth, options = {}) {
     for (let j = 0; j < octaves; j++) {
       const x = i % width
       const y = ~~(i / width)
-      const noiseValue = perlin.noise(
-        (x * frequency) / scale,
-        (y * frequency) / scale,
+      const noiseValue = generator[noiseType](
+        (x / scale) * frequency,
+        (y / scale) * frequency,
         seed
       )
-      data[i] += amplitude * Math.abs(noiseValue) * height
+      data[i] += amplitude * (noiseValue * 0.5 + 0.5)
       amplitude *= g
       norm += amplitude
       frequency *= gap
     }
     data[i] /= norm
-    data[i] = Math.pow(data[i], exp)
+    data[i] = Math.pow(data[i], exp) * height
   }
   return data
 }
