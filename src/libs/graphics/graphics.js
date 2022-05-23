@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import Stats from 'three/examples/jsm/libs/stats.module'
-import { WEBGL } from 'three/examples/jsm/WebGL'
+import WebGL from 'three/examples/jsm/capabilities/WebGL'
 
 function getImageData() {
   const canvas = document.createElement('canvas')
@@ -25,7 +25,7 @@ function getPixel(imagedata, x, y) {
 }
 
 function createGraphics() {
-  if (!WEBGL.isWebGL2Available()) {
+  if (!WebGL.isWebGL2Available()) {
     return false
   }
 
@@ -53,7 +53,7 @@ function createGraphics() {
   const scene = new THREE.Scene()
   //scene.background = new THREE.Color(0xaaaaaa)
 
-  createLights()
+  //createLights()
 
   function createLights() {
     let light = new THREE.DirectionalLight(0x808080, 1, 100)
