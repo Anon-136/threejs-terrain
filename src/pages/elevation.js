@@ -1,9 +1,12 @@
 import { useEffect } from 'react'
 import * as THREE from 'three'
-import createGame from '../libs/game/Game'
-import { generateHeight } from '../libs/noises/generateHeight'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { GUI } from 'dat.gui'
+// Core functions
+import createGame from '../libs/game/Game'
+import { generateHeight } from '../libs/noises/generateHeight'
+// Shaders
+import { terrainShader } from '../libs/shaders/terrainShader'
 
 const worldWidth = 256
 const worldDepth = 256
@@ -32,6 +35,21 @@ export default function Elevation() {
       persistence: 1,
       noiseType: 'perlin',
     }
+
+    let material = new THREE.ShaderMaterial({
+      vertexShader: terrainShader.VS,
+      fragmentShader: terrainShader.PS,
+    })
+
+    function updateTexture(heightMap) {
+      // if (!material) {
+      //   material = new THREE.MeshBasicMaterial({ map: texture })
+      // } else {
+      //   material.map = texture
+      //   material.needsUpdate = true
+      // }
+    }
+
     // Generate height map
     const vertices = geometry.getAttribute('position')
     function generate() {
@@ -41,6 +59,7 @@ export default function Elevation() {
       }
       vertices.needsUpdate = true
     }
+
     generate()
 
     const gui = new GUI()
@@ -63,26 +82,19 @@ export default function Elevation() {
       })
       .onChange(generate)
 
-    // Materials
-    const material = new THREE.MeshStandardMaterial({
-      wireframe: true,
-      side: THREE.FrontSide,
-      vertexColors: THREE.VertexColors,
-    })
-
     // Mesh
     const plane = new THREE.Mesh(geometry, material)
-    plane.castShadow = false
-    plane.receiveShadow = true
-
     game.scene.add(plane)
+
     game.scene.background = new THREE.Color(0xffffff)
     game.start(() => {
       controls.update()
     })
 
     return () => {
+      material.dispose()
       gui.destroy()
+      geometry.dispose()
     }
   }, [])
 
