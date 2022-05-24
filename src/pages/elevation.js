@@ -6,7 +6,7 @@ import { GUI } from 'dat.gui'
 import createGame from '../libs/game/Game'
 import { generateHeight } from '../libs/noises/generateHeight'
 // Shaders
-import { terrainShader } from '../libs/shaders/terrainShader'
+import { terrainShader } from '../shaders/terrainShader'
 
 const worldWidth = 256
 const worldDepth = 256
@@ -44,15 +44,6 @@ export default function Elevation() {
       fragmentShader: terrainShader.PS,
     })
 
-    function updateTexture(heightMap) {
-      // if (!material) {
-      //   material = new THREE.MeshBasicMaterial({ map: texture })
-      // } else {
-      //   material.map = texture
-      //   material.needsUpdate = true
-      // }
-    }
-
     // Generate height map
     const vertices = geometry.getAttribute('position')
     function generate() {
@@ -60,6 +51,11 @@ export default function Elevation() {
       for (let i = 0; i < vertices.count; i++) {
         vertices.setY(i, heightMap[i] * heightOptions.height)
       }
+      console.log(heightMap)
+      geometry.setAttribute(
+        'height',
+        new THREE.Float32BufferAttribute(heightMap, 1)
+      )
       vertices.needsUpdate = true
     }
 
