@@ -4,6 +4,7 @@ import Home from './pages/home'
 import Test from './pages/test'
 import BasicPlane from './pages/basic_plane'
 import Elevation from './pages/elevation'
+import Infinite from './pages/infinite'
 
 export default function App() {
   return (
@@ -23,6 +24,7 @@ export default function App() {
           <Route path="/test" element={<Test />} />
           <Route path="/basic-plane" element={<BasicPlane />} />
           <Route path="/elevation" element={<Elevation />} />
+          <Route path="/infinite" element={<Infinite />} />
           <Route path="/" exact element={<Home />} />
         </Routes>
       </div>
