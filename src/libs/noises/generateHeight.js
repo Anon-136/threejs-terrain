@@ -36,8 +36,8 @@ export function generateHeight(width, depth, options = {}) {
         seed
       )
       data[i] += amplitude * (noiseValue * 0.5 + 0.5)
-      amplitude *= g
       norm += amplitude
+      amplitude *= g
       frequency *= gap
     }
     data[i] /= norm
