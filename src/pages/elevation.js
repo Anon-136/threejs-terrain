@@ -33,10 +33,7 @@ export default function Elevation() {
       exp: 1,
       persistence: 1,
       noiseType: 'perlin',
-    }
-
-    const heightOptions = {
-      height: 100,
+      height: 150,
     }
 
     let material = new THREE.ShaderMaterial({
@@ -49,9 +46,9 @@ export default function Elevation() {
     function generate() {
       const heightMap = generateHeight(worldWidth, worldDepth, options)
       for (let i = 0; i < vertices.count; i++) {
-        vertices.setY(i, heightMap[i] * heightOptions.height)
+        vertices.setY(i, heightMap[i] * options.height)
       }
-      console.log(heightMap)
+      // console.log(heightMap)
       geometry.setAttribute(
         'height',
         new THREE.Float32BufferAttribute(heightMap, 1)
@@ -63,9 +60,9 @@ export default function Elevation() {
 
     const gui = new GUI()
     const terrainFolder = gui.addFolder('Terrain')
-    terrainFolder.add(options, 'height', 0, 500).onChange(generate)
-    terrainFolder.add(options, 'exp', 0, 5).onChange(generate)
+    terrainFolder.add(options, 'height', 0, 1000).onChange(generate)
     terrainFolder.add(options, 'scale', 1, 1000).onChange(generate)
+    terrainFolder.add(options, 'exp', 0, 5).onChange(generate)
     terrainFolder.add(options, 'gap', 0, 10).onChange(generate)
     terrainFolder.add(options, 'persistence', 0, 10).onChange(generate)
     terrainFolder.add(options, 'octaves', 1, 10, 1).onChange(generate)

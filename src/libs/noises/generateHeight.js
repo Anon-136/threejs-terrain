@@ -10,7 +10,7 @@ const generator = {
   simplex: simplex3,
 }
 
-export function generateHeight(width, depth, offset = [], options = {}) {
+export function generateHeight(width, depth, options = {}, offset = []) {
   const [offsetX = 0, offsetY = 0] = offset
   const {
     seed = 1,

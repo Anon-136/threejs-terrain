@@ -15,24 +15,29 @@ export class Chunk {
       resolution - 1
     )
     geometry.rotateX(-Math.PI / 2)
+    this.geometry = geometry
     const mesh = new THREE.Mesh(geometry, material)
     mesh.position.set(x * MIN_CHUNK_SIZE, 0, z * MIN_CHUNK_SIZE)
     this.mesh = mesh
   }
   generate(options) {
-    const vertices = this.mesh.geometry.getAttribute('position')
+    const vertices = this.geometry.getAttribute('position')
     const heightMap = generateHeight(
       this.resolution,
       this.resolution,
-      this.offset,
-      options
+      options,
+      this.offset
     )
     for (let i = 0; i < vertices.count; i++) {
-      vertices.setY(i, heightMap[i])
+      vertices.setY(i, heightMap[i] * options.height)
     }
+    this.geometry.setAttribute(
+      'height',
+      new THREE.Float32BufferAttribute(heightMap, 1)
+    )
     vertices.needsUpdate = true
   }
   destroy() {
-    this.mesh.geometry.dispose()
+    this.geometry.dispose()
   }
 }
