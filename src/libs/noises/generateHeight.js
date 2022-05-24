@@ -15,7 +15,6 @@ export function generateHeight(width, depth, options = {}) {
     seed = 1,
     octaves = 1,
     scale = 100,
-    height = 100,
     gap = 1,
     exp = 1,
     persistence = 1,
@@ -42,7 +41,7 @@ export function generateHeight(width, depth, options = {}) {
       frequency *= gap
     }
     data[i] /= norm
-    data[i] = Math.pow(data[i], exp) * height
+    data[i] = Math.pow(data[i], exp)
   }
   return data
 }

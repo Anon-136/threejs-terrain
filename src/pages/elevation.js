@@ -29,11 +29,14 @@ export default function Elevation() {
     const options = {
       octaves: 5,
       scale: 50,
-      height: 100,
       gap: 2,
       exp: 1,
       persistence: 1,
       noiseType: 'perlin',
+    }
+
+    const heightOptions = {
+      height: 100,
     }
 
     let material = new THREE.ShaderMaterial({
@@ -55,7 +58,7 @@ export default function Elevation() {
     function generate() {
       const heightMap = generateHeight(worldWidth, worldDepth, options)
       for (let i = 0; i < vertices.count; i++) {
-        vertices.setY(i, heightMap[i])
+        vertices.setY(i, heightMap[i] * heightOptions.height)
       }
       vertices.needsUpdate = true
     }
@@ -64,7 +67,11 @@ export default function Elevation() {
 
     const gui = new GUI()
     const terrainFolder = gui.addFolder('Terrain')
-    terrainFolder.add(options, 'height').min(0).max(500).onChange(generate)
+    terrainFolder
+      .add(heightOptions, 'height')
+      .min(0)
+      .max(500)
+      .onChange(generate)
     terrainFolder.add(options, 'exp').min(0).max(5).onChange(generate)
     terrainFolder.add(options, 'scale').min(1).max(1000).onChange(generate)
     terrainFolder.add(options, 'gap').min(0).max(10).onChange(generate)
@@ -86,7 +93,7 @@ export default function Elevation() {
     const plane = new THREE.Mesh(geometry, material)
     game.scene.add(plane)
 
-    game.scene.background = new THREE.Color(0xffffff)
+    game.scene.background = new THREE.Color(0xd3d3d3)
     game.start(() => {
       controls.update()
     })
