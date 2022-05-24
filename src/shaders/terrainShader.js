@@ -2,6 +2,7 @@ export const terrainShader = (function () {
   // Vertex shader
   const _VS = `
  // Attributes
+ attribute float height; // value is between 0.0 and 1.0
 
 // Outputs
 varying vec3 vNormal;
@@ -14,15 +15,13 @@ void main() {
   vNormal = normal;
   vPosition = position.xyz;
 
-  float heightValue = clamp(position.y / 255.0, 0.0, 1.0);
-
-  if (heightValue < 0.2) {
+  if (height < 0.2) {
     vColor = vec3(0.0, 0.0, 1.0);
   }
-  else if (heightValue < 0.5) {
+  else if (height < 0.5) {
     vColor = vec3(0.0588, 0.6118, 0.4);
   }
-  else if (heightValue < 0.8) {
+  else if (height < 0.7) {
     vColor = vec3(0.4784, 0.3647, 0.1451);
   }
   else {
