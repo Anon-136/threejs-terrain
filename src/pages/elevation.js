@@ -63,21 +63,12 @@ export default function Elevation() {
 
     const gui = new GUI()
     const terrainFolder = gui.addFolder('Terrain')
-    terrainFolder
-      .add(heightOptions, 'height')
-      .min(0)
-      .max(500)
-      .onChange(generate)
-    terrainFolder.add(options, 'exp').min(0).max(5).onChange(generate)
-    terrainFolder.add(options, 'scale').min(1).max(1000).onChange(generate)
-    terrainFolder.add(options, 'gap').min(0).max(10).onChange(generate)
-    terrainFolder.add(options, 'persistence').min(0).max(10).onChange(generate)
-    terrainFolder
-      .add(options, 'octaves')
-      .min(1)
-      .max(10)
-      .step(1)
-      .onChange(generate)
+    terrainFolder.add(options, 'height', 0, 500).onChange(generate)
+    terrainFolder.add(options, 'exp', 0, 5).onChange(generate)
+    terrainFolder.add(options, 'scale', 1, 1000).onChange(generate)
+    terrainFolder.add(options, 'gap', 0, 10).onChange(generate)
+    terrainFolder.add(options, 'persistence', 0, 10).onChange(generate)
+    terrainFolder.add(options, 'octaves', 1, 10, 1).onChange(generate)
     terrainFolder
       .add(options, 'noiseType', {
         perlin: 'perlin',
