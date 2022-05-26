@@ -1,8 +1,8 @@
 export const terrainShader = (function () {
   // Vertex shader
   const _VS = `
- // Attributes
- attribute float height; // value is between 0.0 and 1.0
+// Attributes
+attribute vec3 biomeColor;
 
 // Outputs
 varying vec3 vNormal;
@@ -12,21 +12,10 @@ varying vec3 vColor;
 #define saturate(a) clamp( a, 0.0, 1.0 )
 
 void main() {
+  
   vNormal = normal;
   vPosition = position.xyz;
-
-  if (height < 0.2) {
-    vColor = vec3(0.0, 0.0, 1.0);
-  }
-  else if (height < 0.5) {
-    vColor = vec3(0.0588, 0.6118, 0.4);
-  }
-  else if (height < 0.7) {
-    vColor = vec3(0.4784, 0.3647, 0.1451);
-  }
-  else {
-    vColor = vec3(1.0, 1.0, 1.0);
-  }
+  vColor = biomeColor;
 
   gl_Position = projectionMatrix * modelViewMatrix * vec4(position.x, position.y, position.z, 1.0);
 } 

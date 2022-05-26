@@ -1,4 +1,4 @@
-import { generateHeight } from '../libs/noises/generateHeight'
+import { sampleNoise } from '../libs/noises/sampleNoise'
 
 import * as THREE from 'three'
 
@@ -22,7 +22,7 @@ export class Chunk {
   }
   generate(options) {
     const vertices = this.geometry.getAttribute('position')
-    const heightMap = generateHeight(
+    const heightMap = sampleNoise(
       this.resolution,
       this.resolution,
       options,
@@ -35,6 +35,7 @@ export class Chunk {
       'height',
       new THREE.Float32BufferAttribute(heightMap, 1)
     )
+    this.geometry.computeVertexNormals()
     vertices.needsUpdate = true
   }
   destroy() {

@@ -10,7 +10,7 @@ const generator = {
   simplex: simplex3,
 }
 
-export function generateHeight(width, depth, options = {}, offset = []) {
+export function sampleNoise(width, depth, options = {}, offset = []) {
   const [offsetX = 0, offsetY = 0] = offset
   const {
     seed = 1,
@@ -28,6 +28,7 @@ export function generateHeight(width, depth, options = {}, offset = []) {
     let amplitude = 1
     let frequency = 1
     let norm = 0
+    let e = 0
     for (let j = 0; j < octaves; j++) {
       const x = i % width
       const y = ~~(i / width)
@@ -36,13 +37,13 @@ export function generateHeight(width, depth, options = {}, offset = []) {
         ((y + offsetY) / scale) * frequency,
         seed
       )
-      data[i] += amplitude * (noiseValue * 0.5 + 0.5)
+      e += amplitude * (noiseValue * 0.5 + 0.5)
       norm += amplitude
       amplitude *= g
       frequency *= gap
     }
-    data[i] /= norm
-    data[i] = Math.pow(data[i], exp)
+    e /= norm
+    data[i] = Math.pow(e, exp)
   }
   return data
 }
