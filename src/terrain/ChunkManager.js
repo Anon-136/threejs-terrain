@@ -20,6 +20,7 @@ export class Chunk {
     mesh.position.set(x * MIN_CHUNK_SIZE, 0, z * MIN_CHUNK_SIZE)
     this.mesh = mesh
   }
+  // TODO: make this function be generator
   generate(options) {
     const vertices = this.geometry.getAttribute('position')
     const heightMap = sampleNoise(
@@ -40,5 +41,13 @@ export class Chunk {
   }
   destroy() {
     this.geometry.dispose()
+  }
+
+  Hide() {
+    this.mesh.visible = false
+  }
+
+  Show() {
+    this.mesh.visible = true
   }
 }
