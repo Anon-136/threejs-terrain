@@ -1,5 +1,5 @@
-import * as THREE from 'three'
 import { createGraphics } from '../graphics/graphics'
+import ResourceTracker from '../ResourceTracker'
 
 const defaultState = {}
 
@@ -7,6 +7,8 @@ const defaultState = {}
 // OnStep callback to call in each frame
 function createGame() {
   const graphics = createGraphics()
+  const resMgr = new ResourceTracker()
+  const track = resMgr.track.bind(resMgr)
 
   if (!graphics) {
     alert('WebGL2 is not available')
@@ -19,10 +21,18 @@ function createGame() {
   let onStep = null
   const minFrameTime = 1.0 / 10.0
 
-  function start(updateCallback) {
+  const start = (updateCallback) => {
     onStep = updateCallback
     // execute game loop
     tick()
+  }
+
+  const addObject = (gameObject) => {
+    scene.add(track(gameObject))
+  }
+
+  const destroyScene = () => {
+    resMgr.dispose()
   }
 
   function tick() {
@@ -52,6 +62,8 @@ function createGame() {
     renderer,
     camera,
     start,
+    destroyScene,
+    addObject,
   }
 }
 
