@@ -16,28 +16,28 @@ class QuadTree {
   // return all nodes in QuadTree
   GetChildren() {
     const children = []
-    this.GetChildren(this.root, children)
+    this._GetChildren(this.root, children)
     return children
   }
 
   // recursively put node's children into target array
-  GetChildren(node, target) {
+  _GetChildren(node, target) {
     if (node.children.length == 0) {
       target.push(node)
       return
     }
 
     for (let c of node.children) {
-      this.GetChildren(c, target)
+      this._GetChildren(c, target)
     }
   }
   // Divide root into 4 child nodes
   // and recursively devide each node based on given position
   Insert(pos) {
-    this.Insert(this.root, new THREE.Vector2(pos.x, pos.z))
+    this._Insert(this.root, new THREE.Vector2(pos.x, pos.z))
   }
 
-  Insert(child, pos) {
+  _Insert(child, pos) {
     const distToChild = this.DistanceToChild(child, pos)
 
     if (distToChild < child.size.x && child.size.x > MIN_NODE_SIZE) {
