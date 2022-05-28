@@ -1,7 +1,8 @@
 export const terrainShader = (function () {
   // Vertex shader
   const _VS = `
-// Attributes
+uniform vec3 sunDirection;
+
 attribute vec3 biomeColor;
 
 // Outputs
@@ -23,15 +24,15 @@ void main() {
 
   // Fragment shader
   const _PS = `
-// Inputs from vertextShader
+uniform vec3 sunDirection;
+
+// Inputs
 varying vec3 vNormal;
 varying vec3 vPosition;
 varying vec3 vColor;
 
-
 void main() {
-  vec3 light = vec3(1, 1, 1);
-  light = normalize(light);
+  vec3 light = normalize(sunDirection);
   float dProd = max(0.0, dot(vNormal, light));
 
   vec3 color = dProd * vColor;

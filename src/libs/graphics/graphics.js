@@ -31,6 +31,10 @@ function createGraphics() {
 
   // Create WebGL renderer
   const renderer = new THREE.WebGLRenderer({ antialias: true })
+  renderer.outputEncoding = THREE.sRGBEncoding
+  renderer.toneMapping = THREE.ACESFilmicToneMapping
+  renderer.toneMappingExposure = 0.5
+
   renderer.setPixelRatio(window.devicePixelRatio)
   renderer.setSize(window.innerWidth, window.innerHeight)
 
@@ -44,30 +48,13 @@ function createGraphics() {
   container.appendChild(stats.dom)
 
   const fov = 60
-  const aspect = 1920 / 1080
+  const aspect = window.innerWidth / window.innerHeight
   const near = 10
   const far = 10000
   const camera = new THREE.PerspectiveCamera(fov, aspect, near, far)
-  camera.position.set(70, 700, 70)
+  camera.position.set(70, 700, 0)
 
   const scene = new THREE.Scene()
-  //scene.background = new THREE.Color(0xaaaaaa)
-
-  //createLights()
-
-  function createLights() {
-    let light = new THREE.DirectionalLight(0x808080, 1, 100)
-    light.position.set(-100, 100, -100)
-    light.target.position.set(0, 0, 0)
-    light.castShadow = false
-    scene.add(light)
-
-    light = new THREE.DirectionalLight(0x404040, 1, 100)
-    light.position.set(100, 100, -100)
-    light.target.position.set(0, 0, 0)
-    light.castShadow = false
-    scene.add(light)
-  }
 
   const graphicsUpdate = (timeInSeconds) => {
     renderer.render(scene, camera)
