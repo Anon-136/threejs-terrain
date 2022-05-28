@@ -56,23 +56,26 @@ export default function Infinite() {
       terrainSky.sunDirection
     )
 
-    const onChange = () => {
+    const rebuildTerrain = () => {
       chunkManager.rebuild(options)
     }
 
     const terrainFolder = gui.addFolder('Terrain')
-    terrainFolder.add(options, 'height', 0, 3000).onChange(onChange)
-    terrainFolder.add(options, 'scale', 1, 5000).onChange(onChange)
-    terrainFolder.add(options, 'exp', 0, 5).onChange(onChange)
-    terrainFolder.add(options, 'gap', 0, 10).onChange(onChange)
-    terrainFolder.add(options, 'persistence', 0, 10).onChange(onChange)
-    terrainFolder.add(options, 'octaves', 1, 10, 1).onChange(onChange)
+    terrainFolder.add(options, 'height', 0, 3000).listen()
+    terrainFolder.add(options, 'scale', 1, 5000).listen()
+    terrainFolder.add(options, 'exp', 0, 5).listen()
+    terrainFolder.add(options, 'gap', 0, 10).listen()
+    terrainFolder.add(options, 'persistence', 0, 10).listen()
+    terrainFolder.add(options, 'octaves', 1, 10, 1).listen()
     terrainFolder
       .add(options, 'noiseType', {
         perlin: 'perlin',
         simplex: 'simplex',
       })
-      .onChange(onChange)
+      .listen()
+
+    guiParams.rebuild = rebuildTerrain
+    terrainFolder.add(guiParams, 'rebuild')
 
     game.start(() => {
       controls.update()
