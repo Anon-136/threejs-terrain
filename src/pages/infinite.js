@@ -17,6 +17,12 @@ export default function Infinite() {
     controls.keyPanSpeed = 50
     controls.enableDamping = true
     controls.dampingFactor = 0.05
+    controls.screenSpacePanning = false
+
+    controls.minDistance = 200
+    controls.maxDistance = 3000
+
+    controls.maxPolarAngle = Math.PI / 2
     controls.keys = {
       LEFT: 'KeyA',
       UP: 'KeyW',
@@ -64,7 +70,8 @@ export default function Infinite() {
     //   game.scene.add(chunk.mesh)
     // }
 
-    game.scene.background = new THREE.Color(0xffffff)
+    const color = new THREE.Color(0xffffff)
+    game.scene.background = color
     game.start(() => {
       controls.update()
       chunkManager.update(game.camera)
