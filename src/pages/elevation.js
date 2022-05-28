@@ -27,6 +27,10 @@ export default function Elevation() {
     const gui = new GUI()
     const guiParams = {}
 
+    // sky
+    const skyTerrain = new TerrainSky(gui, guiParams)
+    game.addObject(skyTerrain.sky)
+
     // Objects
     const geometry = new THREE.PlaneGeometry(
       500,
@@ -138,13 +142,9 @@ export default function Elevation() {
       })
       .onChange(onMoistureChange)
 
-    // sky
-    const skyTerrain = new TerrainSky(gui, guiParams)
-    game.addObject(skyTerrain.sky)
-
     const uniforms = {
       sunDirection: {
-        value: skyTerrain.sunPosition,
+        value: skyTerrain.sunDirection,
       },
     }
 
