@@ -1,45 +1,68 @@
 import * as THREE from 'three'
 import { QuadTree } from './Quadtree'
 import { Chunk, MIN_CHUNK_SIZE } from './Chunk'
+import { dictDifference, dictIntersection } from '../libs/utils'
 
-export const resolution = 256
+export const RESOLUTION = 256
 export class ChunkManager {
   chunks = {}
-  constructor(scene, options, camera) {
+  constructor(scene, options) {
     this.group = new THREE.Group()
     scene.add(this.group)
     this.options = options
-    this.updateQuadTree(camera)
   }
-  createChunk(x, z, width) {
-    const newChunk = new Chunk(width, resolution, x, z)
+  createChunk(x, z, w) {
+    const newChunk = new Chunk(w, RESOLUTION, x, z)
     newChunk.generate(this.options)
     this.group.add(newChunk.mesh)
+    return newChunk
   }
-  update() {}
+  rebuild(options) {
+    this.options = options
+    for (const obj of Object.values(this.chunks)) {
+      const { chunk } = obj
+      chunk.generate(options)
+    }
+  }
+  update(camera) {
+    // this.updateSingle(camera)
+    this.updateQuadTree(camera)
+  }
   updateQuadTree(camera) {
+    if (Object.entries(this.chunks).length) {
+      return
+    }
     const quadTree = new QuadTree({
       min: new THREE.Vector2(-32000, -32000),
       max: new THREE.Vector2(32000, 32000),
     })
     quadTree.insert(camera.position)
 
-    const children = quadTree.getChildren()
-    const newChunks = {}
     const key = (x, z, w) => `${x}/${z}[${w}]`
-    for (const child of children) {
-      console.log(child)
-      const [x, z] = child.center
-      const w = child.size.x
+    const newChunks = {}
+    const children = quadTree.getChildren()
+    for (const node of children) {
+      const [x, z] = node.center
+      const w = node.size
       const newKey = key(x, z, w)
-      if (newKey in this.chunks) {
-        return
-      }
-      this.chunks[newKey] = {
-        position: [x, z, w],
+      newChunks[newKey] = node
+    }
+    const oldChunks = this.chunks
+    const difference = dictDifference(newChunks, oldChunks)
+    const intersection = dictIntersection(oldChunks, newChunks)
+    const recycle = dictDifference(oldChunks, newChunks)
+    // this._builder._old.push(...recycle);
+    this.destroy(recycle)
+    const chunks = intersection
+    for (const [key, node] of Object.entries(difference)) {
+      const [x, z] = node.center
+      const w = node.size
+      chunks[key] = {
+        params: [x, z, w],
         chunk: this.createChunk(x, z, w),
       }
     }
+    this.chunks = chunks
   }
   updateSingle(camera) {
     const key = (x, z) => `${x}/${z}`
@@ -62,10 +85,10 @@ export class ChunkManager {
     const z = Math.floor(p.z / MIN_CHUNK_SIZE + 0.5)
     return [x, z]
   }
-  destroy() {
-    for (const val of Objects.values(this.chunks)) {
-      const { chunk } = val
-      chunk.destroy()
+  destroy(chunks = this.chunks) {
+    for (const obj of Object.values(chunks)) {
+      this.group.remove(obj.chunk.mesh)
+      obj.chunk.destroy()
     }
   }
 }

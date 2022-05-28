@@ -32,43 +32,37 @@ export default function Infinite() {
 
     // Generate Chunk
     const options = {
+      seed: 2,
+      moiseSeed: 3,
       octaves: 5,
-      scale: 400,
-      height: 200,
-      gap: 2,
-      exp: 2,
-      persistence: 1,
+      scale: 2000,
+      height: 1000,
+      gap: 5,
+      exp: 2.2,
+      persistence: 2.6,
       noiseType: 'simplex',
     }
 
-    const chunkManager = new ChunkManager(game.scene, options, game.camera)
-    // const onChange = () => {
-    //   for (const chunk of chunks) {
-    //     chunk.generate(options)
-    //   }
-    // }
-    // onChange()
+    const chunkManager = new ChunkManager(game.scene, options)
 
-    // const gui = new GUI()
-    // const terrainFolder = gui.addFolder('Terrain')
-    // terrainFolder.add(options, 'height', 0, 1000).onChange(onChange)
-    // terrainFolder.add(options, 'scale', 1, 1000).onChange(onChange)
-    // terrainFolder.add(options, 'exp', 0, 5).onChange(onChange)
-    // terrainFolder.add(options, 'gap', 0, 10).onChange(onChange)
-    // terrainFolder.add(options, 'persistence', 0, 10).onChange(onChange)
-    // terrainFolder.add(options, 'octaves', 1, 10, 1).onChange(onChange)
-    // terrainFolder
-    //   .add(options, 'noiseType', {
-    //     perlin: 'perlin',
-    //     simplex: 'simplex',
-    //   })
-    //   .onChange(onChange)
+    const onChange = () => {
+      chunkManager.rebuild(options)
+    }
 
-    // Mesh
-
-    // for (const chunk of chunks) {
-    //   game.scene.add(chunk.mesh)
-    // }
+    const gui = new GUI()
+    const terrainFolder = gui.addFolder('Terrain')
+    terrainFolder.add(options, 'height', 0, 3000).onChange(onChange)
+    terrainFolder.add(options, 'scale', 1, 5000).onChange(onChange)
+    terrainFolder.add(options, 'exp', 0, 5).onChange(onChange)
+    terrainFolder.add(options, 'gap', 0, 10).onChange(onChange)
+    terrainFolder.add(options, 'persistence', 0, 10).onChange(onChange)
+    terrainFolder.add(options, 'octaves', 1, 10, 1).onChange(onChange)
+    terrainFolder
+      .add(options, 'noiseType', {
+        perlin: 'perlin',
+        simplex: 'simplex',
+      })
+      .onChange(onChange)
 
     const color = new THREE.Color(0xffffff)
     game.scene.background = color
@@ -82,7 +76,8 @@ export default function Infinite() {
       //   chunk.destroy()
       // }
       // material.dispose()
-      // gui.destroy()
+      chunkManager.destroy()
+      gui.destroy()
     }
   }, [])
 

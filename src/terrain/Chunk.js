@@ -3,7 +3,7 @@ import { genearteBiomesColor } from '../libs/biomes'
 import { sampleData } from '../libs/noises/sampleNoise'
 import { terrainShader } from '../shaders/terrainShader'
 
-export const MIN_CHUNK_SIZE = 500
+export const MIN_CHUNK_SIZE = 750
 
 export class Chunk {
   constructor(width, resolution, x, z) {
@@ -32,11 +32,16 @@ export class Chunk {
   // TODO: make this function be generator
   generate(options) {
     const vertices = this.geometry.getAttribute('position')
-    const heightMap = sampleData(vertices, options, this.offset)
+    const heightMap = sampleData(vertices, this.offset, options.seed, options)
     for (let i = 0; i < vertices.count; i++) {
       vertices.setY(i, Math.max(0.1, heightMap[i]) * options.height)
     }
-    const moistureMap = sampleData(vertices, options, this.offset)
+    const moistureMap = sampleData(
+      vertices,
+      this.offset,
+      options.moiseSeed,
+      options
+    )
     const colors = genearteBiomesColor(heightMap, moistureMap) // get color of each vertex
     this.geometry.setAttribute(
       'biomeColor',
