@@ -33,10 +33,10 @@ export default function Infinite() {
     // Generate Chunk
     const options = {
       octaves: 5,
-      scale: 250,
-      height: 500,
+      scale: 400,
+      height: 200,
       gap: 2,
-      exp: 3,
+      exp: 2,
       persistence: 1,
       noiseType: 'simplex',
     }
