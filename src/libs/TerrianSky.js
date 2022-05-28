@@ -4,7 +4,7 @@ import { Sky } from 'three/examples/jsm/objects/Sky'
 class TerrainSky {
   constructor(gui, guiParams) {
     this.sky = new Sky()
-    this.sunPosition = new THREE.Vector3()
+    this.sunDirection = new THREE.Vector3()
 
     this.sky.scale.setScalar(450000)
     // GUI
@@ -21,7 +21,6 @@ class TerrainSky {
     }
 
     const onShaderChange = () => {
-      console.log(this.sky.material.uniforms)
       for (let k in guiParams.sky) {
         this.sky.material.uniforms[k].value = guiParams.sky[k]
       }
@@ -31,11 +30,9 @@ class TerrainSky {
       const phi = THREE.MathUtils.degToRad(90 - guiParams.sun.up)
       const theta = THREE.MathUtils.degToRad(guiParams.sun.azimuth)
       // Calcuate sun position from given phi and theta
-      this.sunPosition.setFromSphericalCoords(1, phi, theta)
+      this.sunDirection.setFromSphericalCoords(1, phi, theta)
       // Set sun position in sky's shader
-      this.sky.material.uniforms['sunPosition'].value.copy(this.sunPosition)
-
-      console.log(this.sunPosition)
+      this.sky.material.uniforms['sunPosition'].value.copy(this.sunDirection)
     }
 
     const skyRollup = gui.addFolder('Sky')
