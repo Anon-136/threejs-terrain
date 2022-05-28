@@ -22,6 +22,10 @@ export class Chunk {
       vertexShader: terrainShader.VS,
       fragmentShader: terrainShader.PS,
     })
+
+    // Comment this out to show quadtree parttition
+    // this.mesh = new THREE.GridHelper(this.width, 1, 0x00000)
+
     this.mesh = new THREE.Mesh(this.geometry, this.material)
     this.mesh.position.set(x, 0, z)
   }
