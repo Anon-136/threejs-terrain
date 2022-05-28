@@ -48,19 +48,23 @@ export function sampleNoise(width, depth, options = {}, offset = []) {
   return data
 }
 
-export function sampleData(vertices, options, offset) {
+export function sampleData(vertices, offset, seed, options) {
   const size = vertices.count
   const data = new Float32Array(size)
+  const [offsetX, offsetZ] = offset
   for (let i = 0; i < size; i++) {
-    data[i] = noise(vertices.getX(i), vertices.getZ(i), options, offset)
+    data[i] = noise(
+      vertices.getX(i) + offsetX,
+      vertices.getZ(i) + offsetZ,
+      seed,
+      options
+    )
   }
   return data
 }
 
-export function noise(x, y, options = {}, offset = []) {
-  const [offsetX = 0, offsetY = 0] = offset
+export function noise(x, y, seed, options = {}) {
   const {
-    seed = 1,
     octaves = 1,
     scale = 100,
     gap = 1,
@@ -75,8 +79,8 @@ export function noise(x, y, options = {}, offset = []) {
   let value = 0
   for (let j = 0; j < octaves; j++) {
     const noiseValue = generator[noiseType](
-      ((x + offsetX) / scale) * frequency,
-      ((y + offsetY) / scale) * frequency,
+      (x / scale) * frequency,
+      (y / scale) * frequency,
       seed
     )
     value += amplitude * (noiseValue * 0.5 + 0.5)

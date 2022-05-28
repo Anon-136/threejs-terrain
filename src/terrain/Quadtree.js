@@ -4,7 +4,7 @@ import { MIN_CHUNK_SIZE } from './Chunk'
 export class QuadNode {
   constructor(bounds) {
     this.bounds = bounds
-    this.size = bounds.getSize(new THREE.Vector2())
+    this.size = bounds.getSize(new THREE.Vector2()).x
     this.center = bounds.getCenter(new THREE.Vector2())
     this.children = []
   }
@@ -30,7 +30,7 @@ export class QuadTree {
   // and recursively devide each node based on given position
   insert(pos, node = this.root) {
     const distToNode = this.distanceToNode(pos, node)
-    if (distToNode < node.size.x && node.size.x > MIN_CHUNK_SIZE) {
+    if (distToNode < node.size && node.size > MIN_CHUNK_SIZE) {
       node.children = this.createChildren(node)
       for (const child of node.children) {
         this.insert(pos, child)
@@ -40,7 +40,7 @@ export class QuadTree {
 
   // Distance of center of the node to the given position
   distanceToNode(pos, node) {
-    return node.center.distanceTo(pos)
+    return node.center.distanceTo(new THREE.Vector2(pos.x, pos.z))
   }
 
   createChildren(node) {
