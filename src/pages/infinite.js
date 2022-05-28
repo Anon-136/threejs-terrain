@@ -35,7 +35,7 @@ export default function Infinite() {
       noiseType: 'simplex',
     }
 
-    const chunkManager = new ChunkManager(options)
+    const chunkManager = new ChunkManager(game.scene, options, game.camera)
     // const onChange = () => {
     //   for (const chunk of chunks) {
     //     chunk.generate(options)
@@ -67,7 +67,7 @@ export default function Infinite() {
     game.scene.background = new THREE.Color(0xffffff)
     game.start(() => {
       controls.update()
-      chunkManager.update(game.camera, game.scene)
+      chunkManager.update(game.camera)
     })
 
     return () => {

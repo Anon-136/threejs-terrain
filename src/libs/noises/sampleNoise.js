@@ -47,3 +47,43 @@ export function sampleNoise(width, depth, options = {}, offset = []) {
   }
   return data
 }
+
+export function sampleData(vertices, options, offset) {
+  const size = vertices.count
+  const data = new Float32Array(size)
+  for (let i = 0; i < size; i++) {
+    data[i] = noise(vertices.getX(i), vertices.getZ(i), options, offset)
+  }
+  return data
+}
+
+export function noise(x, y, options = {}, offset = []) {
+  const [offsetX = 0, offsetY = 0] = offset
+  const {
+    seed = 1,
+    octaves = 1,
+    scale = 100,
+    gap = 1,
+    exp = 1,
+    persistence = 1,
+    noiseType = 'perlin',
+  } = options
+  const g = Math.pow(2, -persistence)
+  let amplitude = 1
+  let frequency = 1
+  let norm = 0
+  let value = 0
+  for (let j = 0; j < octaves; j++) {
+    const noiseValue = generator[noiseType](
+      ((x + offsetX) / scale) * frequency,
+      ((y + offsetY) / scale) * frequency,
+      seed
+    )
+    value += amplitude * (noiseValue * 0.5 + 0.5)
+    norm += amplitude
+    amplitude *= g
+    frequency *= gap
+  }
+  value /= norm
+  return Math.pow(value, exp)
+}
