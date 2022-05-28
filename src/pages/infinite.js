@@ -5,10 +5,8 @@ import { GUI } from 'dat.gui'
 // Core functions
 import createGame from '../libs/game/Game'
 // Shaders
-import { terrainShader } from '../shaders/terrainShader'
-import { Chunk } from '../terrain/ChunkManager'
+import { ChunkManager } from '../terrain/ChunkManager'
 
-const resolution = 256
 export default function Infinite() {
   useEffect(() => {
     const game = createGame()
@@ -26,72 +24,58 @@ export default function Infinite() {
       BOTTOM: 'KeyS',
     }
 
-    let material = new THREE.ShaderMaterial({
-      vertexShader: terrainShader.VS,
-      fragmentShader: terrainShader.PS,
-    })
-
     // Generate Chunk
     const options = {
       octaves: 5,
       scale: 250,
       height: 500,
       gap: 2,
-      exp: 1,
+      exp: 3,
       persistence: 1,
       noiseType: 'simplex',
     }
 
-    const chunks = [
-      new Chunk(material, resolution, -1, -1),
-      new Chunk(material, resolution, 0, -1),
-      new Chunk(material, resolution, 1, -1),
-      new Chunk(material, resolution, -1, 0),
-      new Chunk(material, resolution, 0, 0),
-      new Chunk(material, resolution, 1, 0),
-      new Chunk(material, resolution, -1, 1),
-      new Chunk(material, resolution, 0, 1),
-      new Chunk(material, resolution, 1, 1),
-    ]
-    const onChange = () => {
-      for (const chunk of chunks) {
-        chunk.generate(options)
-      }
-    }
-    onChange()
+    const chunkManager = new ChunkManager(options)
+    // const onChange = () => {
+    //   for (const chunk of chunks) {
+    //     chunk.generate(options)
+    //   }
+    // }
+    // onChange()
 
-    const gui = new GUI()
-    const terrainFolder = gui.addFolder('Terrain')
-    terrainFolder.add(options, 'height', 0, 1000).onChange(onChange)
-    terrainFolder.add(options, 'scale', 1, 1000).onChange(onChange)
-    terrainFolder.add(options, 'exp', 0, 5).onChange(onChange)
-    terrainFolder.add(options, 'gap', 0, 10).onChange(onChange)
-    terrainFolder.add(options, 'persistence', 0, 10).onChange(onChange)
-    terrainFolder.add(options, 'octaves', 1, 10, 1).onChange(onChange)
-    terrainFolder
-      .add(options, 'noiseType', {
-        perlin: 'perlin',
-        simplex: 'simplex',
-      })
-      .onChange(onChange)
+    // const gui = new GUI()
+    // const terrainFolder = gui.addFolder('Terrain')
+    // terrainFolder.add(options, 'height', 0, 1000).onChange(onChange)
+    // terrainFolder.add(options, 'scale', 1, 1000).onChange(onChange)
+    // terrainFolder.add(options, 'exp', 0, 5).onChange(onChange)
+    // terrainFolder.add(options, 'gap', 0, 10).onChange(onChange)
+    // terrainFolder.add(options, 'persistence', 0, 10).onChange(onChange)
+    // terrainFolder.add(options, 'octaves', 1, 10, 1).onChange(onChange)
+    // terrainFolder
+    //   .add(options, 'noiseType', {
+    //     perlin: 'perlin',
+    //     simplex: 'simplex',
+    //   })
+    //   .onChange(onChange)
 
     // Mesh
 
-    for (const chunk of chunks) {
-      game.scene.add(chunk.mesh)
-    }
+    // for (const chunk of chunks) {
+    //   game.scene.add(chunk.mesh)
+    // }
 
     game.scene.background = new THREE.Color(0xffffff)
     game.start(() => {
       controls.update()
+      chunkManager.update(game.camera, game.scene)
     })
 
     return () => {
-      for (const chunk of chunks) {
-        chunk.destroy()
-      }
-      material.dispose()
-      gui.destroy()
+      // for (const chunk of chunks) {
+      //   chunk.destroy()
+      // }
+      // material.dispose()
+      // gui.destroy()
     }
   }, [])
 
