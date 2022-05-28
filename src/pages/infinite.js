@@ -6,10 +6,13 @@ import { GUI } from 'dat.gui'
 import createGame from '../libs/game/Game'
 // Shaders
 import { ChunkManager } from '../terrain/ChunkManager'
+import TerrainSky from '../libs/TerrianSky'
 
 export default function Infinite() {
   useEffect(() => {
     const game = createGame()
+    const gui = new GUI()
+    const guiParams = {}
 
     // Create control
     const controls = new OrbitControls(game.camera, game.renderer.domElement)
@@ -30,6 +33,10 @@ export default function Infinite() {
       BOTTOM: 'KeyS',
     }
 
+    // Sky
+    const terrainSky = new TerrainSky(gui, guiParams)
+    game.addObject(terrainSky.sky)
+
     // Generate Chunk
     const options = {
       seed: 2,
@@ -43,13 +50,16 @@ export default function Infinite() {
       noiseType: 'simplex',
     }
 
-    const chunkManager = new ChunkManager(game.scene, options)
+    const chunkManager = new ChunkManager(
+      game,
+      options,
+      terrainSky.sunDirection
+    )
 
     const onChange = () => {
       chunkManager.rebuild(options)
     }
 
-    const gui = new GUI()
     const terrainFolder = gui.addFolder('Terrain')
     terrainFolder.add(options, 'height', 0, 3000).onChange(onChange)
     terrainFolder.add(options, 'scale', 1, 5000).onChange(onChange)
@@ -64,10 +74,9 @@ export default function Infinite() {
       })
       .onChange(onChange)
 
-    const color = new THREE.Color(0xffffff)
-    game.scene.background = color
     game.start(() => {
       controls.update()
+      terrainSky.update(game.camera)
       chunkManager.update(game.camera)
     })
 
@@ -78,6 +87,7 @@ export default function Infinite() {
       // material.dispose()
       chunkManager.destroy()
       gui.destroy()
+      game.destroyScene()
     }
   }, [])
 

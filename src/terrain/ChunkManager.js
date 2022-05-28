@@ -6,13 +6,14 @@ import { dictDifference, dictIntersection } from '../libs/utils'
 export const RESOLUTION = 256
 export class ChunkManager {
   chunks = {}
-  constructor(scene, options) {
+  constructor(game, options, sunDir) {
     this.group = new THREE.Group()
-    scene.add(this.group)
+    game.addObject(this.group)
     this.options = options
+    this.sunDir = sunDir
   }
   createChunk(x, z, w) {
-    const newChunk = new Chunk(w, RESOLUTION, x, z)
+    const newChunk = new Chunk(w, RESOLUTION, x, z, this.sunDir)
     newChunk.generate(this.options)
     this.group.add(newChunk.mesh)
     return newChunk
