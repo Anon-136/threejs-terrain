@@ -41,7 +41,7 @@ SNOW.getHSL(biomesHSL.SNOW)
  * generate biome value for each vertex using height value and moisture value
  * heightMap and moistureMap must have the same data type and size
  */
-export function genearteBiomesColor(heightMap, moistureMap) {
+export function generateBiomesColor(heightMap, moistureMap) {
   const colors = new Float32Array(heightMap.length * 3)
   for (let i = 0; i < heightMap.length; i++) {
     const color = getBiome(heightMap[i], moistureMap[i])
@@ -53,7 +53,7 @@ export function genearteBiomesColor(heightMap, moistureMap) {
   return colors
 }
 
-function getBiome(h, m) {
+export function getBiome(h, m) {
   if (h < 0.1) return OCEAN
   if (h < 0.12) return BEACH
 

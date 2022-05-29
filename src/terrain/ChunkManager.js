@@ -2,8 +2,8 @@ import * as THREE from 'three'
 import { QuadTree } from './Quadtree'
 import { Chunk, MIN_CHUNK_SIZE } from './Chunk'
 import { dictDifference, dictIntersection } from '../libs/utils'
+import { ChunkBuilder } from './ChunkBuilder'
 
-export const RESOLUTION = 256
 export class ChunkManager {
   chunks = {}
   constructor(game, options, sunDir) {
@@ -11,26 +11,25 @@ export class ChunkManager {
     game.addObject(this.group)
     this.options = options
     this.sunDir = sunDir
+    this.builder = new ChunkBuilder()
   }
-  createChunk(x, z, w) {
-    const newChunk = new Chunk(w, RESOLUTION, x, z, this.sunDir)
-    newChunk.generate(this.options)
-    this.group.add(newChunk.mesh)
-    return newChunk
-  }
-  rebuild(options) {
-    this.options = options
-    for (const obj of Object.values(this.chunks)) {
-      const { chunk } = obj
-      chunk.generate(options)
-    }
+  generateChunk(x, z, w) {
+    return this.builder.allocateChunk(
+      this.group,
+      w,
+      x,
+      z,
+      this.sunDir,
+      this.options
+    )
   }
   update(camera) {
     // this.updateSingle(camera)
     this.updateQuadTree(camera)
   }
   updateQuadTree(camera) {
-    if (Object.entries(this.chunks).length) {
+    this.builder.update()
+    if (this.builder.busy) {
       return
     }
     const quadTree = new QuadTree({
@@ -52,18 +51,25 @@ export class ChunkManager {
     const difference = dictDifference(newChunks, oldChunks)
     const intersection = dictIntersection(oldChunks, newChunks)
     const recycle = dictDifference(oldChunks, newChunks)
-    // this._builder._old.push(...recycle);
-    this.destroy(recycle)
+    this.builder.pushOldChunks(Object.values(recycle))
     const chunks = intersection
     for (const [key, node] of Object.entries(difference)) {
       const [x, z] = node.center
       const w = node.size
       chunks[key] = {
         params: [x, z, w],
-        chunk: this.createChunk(x, z, w),
+        chunk: this.generateChunk(x, z, w),
       }
     }
     this.chunks = chunks
+  }
+
+  // ! below are unused
+  createChunk(x, z, w) {
+    const newChunk = Chunk(w, x, z, this.sunDir, this.options)
+    newChunk.generate()
+    this.group.add(newChunk.mesh)
+    return newChunk
   }
   updateSingle(camera) {
     const key = (x, z) => `${x}/${z}`
@@ -85,6 +91,13 @@ export class ChunkManager {
     const x = Math.floor(p.x / MIN_CHUNK_SIZE + 0.5)
     const z = Math.floor(p.z / MIN_CHUNK_SIZE + 0.5)
     return [x, z]
+  }
+  rebuild(options) {
+    this.options = options
+    for (const obj of Object.values(this.chunks)) {
+      const { chunk } = obj
+      chunk.generate(options)
+    }
   }
   destroy(chunks = this.chunks) {
     for (const obj of Object.values(chunks)) {

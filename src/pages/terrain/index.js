@@ -7,7 +7,7 @@ import createGame from '../../libs/game/Game'
 
 // noise
 import { sampleNoise } from '../../libs/noises/sampleNoise'
-import { genearteBiomesColor } from '../../libs/biomes'
+import { generateBiomesColor } from '../../libs/biomes'
 
 // Shaders
 import { terrainShader } from '../../shaders/terrainShader'
@@ -76,7 +76,7 @@ export default function Terrain() {
     }
 
     const generate = (heightMap, moistureMap) => {
-      const colors = genearteBiomesColor(heightMap, moistureMap) // get color of each vertex
+      const colors = generateBiomesColor(heightMap, moistureMap) // get color of each vertex
 
       for (let i = 0; i < vertices.count; i++) {
         // make water surface smooth

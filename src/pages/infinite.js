@@ -48,6 +48,7 @@ export default function Infinite() {
       exp: 2.2,
       persistence: 2.6,
       noiseType: 'simplex',
+      oceanLevel: 0.1,
     }
 
     const chunkManager = new ChunkManager(
