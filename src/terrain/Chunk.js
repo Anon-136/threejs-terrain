@@ -13,11 +13,12 @@ export class Chunk {
     this.geometry = new THREE.PlaneGeometry(
       width,
       width,
-      resolution - 1,
-      resolution - 1
+      resolution,
+      resolution
     )
     this.geometry.rotateX(-Math.PI / 2)
     this.material = new THREE.ShaderMaterial({
+      // wireframe: true,
       uniforms: {
         sunDirection: {
           value: sunDir,
