@@ -85,6 +85,32 @@ export class Chunk {
     this.geometry.computeVertexNormals()
     vertices.needsUpdate = true
   }
+  *rebuild(options = this.options) {
+    const vertices = this.geometry.getAttribute('position')
+    const heightMap = yield* noiseGenerator(
+      vertices,
+      this.offset,
+      options.seed,
+      options
+    )
+    yield* setHeightGenerator(vertices, heightMap, options)
+    const moistureMap = yield* noiseGenerator(
+      vertices,
+      this.offset,
+      options.moiseSeed,
+      options
+    )
+    const colors = yield* biomesColorGenerator(heightMap, moistureMap) // get color of each vertex
+    this.geometry.setAttribute(
+      'biomeColor',
+      new THREE.BufferAttribute(colors, 3)
+    )
+    yield
+    const [x, z] = this.offset
+    this.mesh.position.set(x, 0, z)
+    this.geometry.computeVertexNormals()
+    vertices.needsUpdate = true
+  }
   destroy() {
     this.geometry.dispose()
     this.material.dispose()
