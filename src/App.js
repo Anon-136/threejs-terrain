@@ -2,8 +2,9 @@ import React from 'react'
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 import Home from './pages/home'
 import Test from './pages/test'
-import BasicPlane from './pages/basic_plane'
-import Elevation from './pages/elevation'
+import Terrain from './pages/terrain'
+import TerrainWithHypsometricTints from './pages/terrain/hypsometricTints'
+
 import Infinite from './pages/infinite'
 
 export default function App() {
@@ -22,8 +23,11 @@ export default function App() {
         </nav> */}
         <Routes>
           <Route path="/test" element={<Test />} />
-          <Route path="/basic-plane" element={<BasicPlane />} />
-          <Route path="/elevation" element={<Elevation />} />
+          <Route path="/terrain" element={<Terrain />} />
+          <Route
+            path="/terrain/hypsometric-tints"
+            element={<TerrainWithHypsometricTints />}
+          />
           <Route path="/infinite" element={<Infinite />} />
           <Route path="/" exact element={<Home />} />
         </Routes>

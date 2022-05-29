@@ -2,22 +2,23 @@ import { useEffect } from 'react'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { GUI } from 'dat.gui'
-import { randomRangeInt } from '../libs/utils'
-import createGame from '../libs/game/Game'
+import { randomRangeInt } from '../../libs/utils'
+import createGame from '../../libs/game/Game'
 
 // noise
-import { sampleNoise } from '../libs/noises/sampleNoise'
-import { genearteBiomesColor } from '../libs/biomes'
+import { sampleNoise } from '../../libs/noises/sampleNoise'
+import { genearteBiomesColor } from '../../libs/biomes'
 
 // Shaders
-import { terrainShader } from '../shaders/terrainShader'
+import { terrainShader } from '../../shaders/terrainShader'
 
 // Objects
-import TerrainSky from '../libs/TerrianSky'
+import TerrainSky from '../../libs/TerrianSky'
 
 const worldWidth = 256
 const worldDepth = 256
-export default function Elevation() {
+
+export default function Terrain() {
   useEffect(() => {
     const game = createGame()
 
@@ -45,26 +46,25 @@ export default function Elevation() {
       octaves: 5,
       scale: 50,
       gap: 2,
-      exp: 1,
+      exp: 1.5,
       persistence: 1,
       noiseType: 'perlin',
-      height: 150,
+      height: 180,
     }
 
     guiParams.moisture = {
-      seed: randomRangeInt(1, 50),
+      seed: 5,
       octaves: 3,
-      scale: 50,
+      scale: 200,
       gap: 2,
       exp: 1,
-      persistence: 1,
-      noiseType: 'perlin',
+      persistence: 2,
+      noiseType: 'simplex',
     }
 
     // Terrain generation
     let heightMap = sampleNoise(worldWidth, worldDepth, guiParams.terrain)
     let moistureMap = sampleNoise(worldWidth, worldDepth, guiParams.moisture)
-
     const onTerrainChange = () => {
       heightMap = sampleNoise(worldWidth, worldDepth, guiParams.terrain)
       generate(heightMap, moistureMap)
@@ -87,11 +87,10 @@ export default function Elevation() {
         }
       }
 
-      // Set shader attributes
-      geometry.setAttribute('biomeColor', new THREE.BufferAttribute(colors, 3))
-
       geometry.computeVertexNormals()
       vertices.needsUpdate = true
+
+      geometry.setAttribute('biomeColor', new THREE.BufferAttribute(colors, 3))
     }
 
     generate(heightMap, moistureMap)
