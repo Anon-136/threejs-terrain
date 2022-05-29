@@ -37,21 +37,3 @@ export function* setHeightGenerator(vertices, heightMap, options) {
     }
   }
 }
-
-export function* biomesColorGenerator(heightMap, moistureMap) {
-  let count = 0
-  const colors = new Float32Array(heightMap.length * 3)
-  for (let i = 0; i < heightMap.length; i++) {
-    const color = getBiome(heightMap[i], moistureMap[i])
-    const j = i * 3
-    colors[j] = color.r
-    colors[j + 1] = color.g
-    colors[j + 2] = color.b
-
-    if (++count === NUM_STEPS) {
-      count = 0
-      yield
-    }
-  }
-  return colors
-}

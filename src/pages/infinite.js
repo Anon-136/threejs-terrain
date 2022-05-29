@@ -1,5 +1,4 @@
 import { useEffect } from 'react'
-import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { GUI } from 'dat.gui'
 // Core functions
@@ -7,6 +6,7 @@ import createGame from '../libs/game/Game'
 // Shaders
 import { ChunkManager } from '../terrain/ChunkManager'
 import TerrainSky from '../libs/TerrianSky'
+import { arids, beachColor, humids, oceanColor } from '../libs/biomes/const'
 
 export default function Infinite() {
   useEffect(() => {
@@ -37,6 +37,23 @@ export default function Infinite() {
     const terrainSky = new TerrainSky(gui, guiParams)
     game.addObject(terrainSky.sky)
 
+    const uniforms = {
+      sunDirection: {
+        value: terrainSky.sunDirection,
+      },
+      ocean: {
+        value: oceanColor,
+      },
+      beach: {
+        value: beachColor,
+      },
+      aridSpline: {
+        value: arids,
+      },
+      humidSpline: {
+        value: humids,
+      },
+    }
     // Generate Chunk
     const options = {
       seed: 2,
@@ -49,13 +66,10 @@ export default function Infinite() {
       persistence: 2.6,
       noiseType: 'simplex',
       oceanLevel: 0.1,
+      uniforms: uniforms,
     }
 
-    const chunkManager = new ChunkManager(
-      game,
-      options,
-      terrainSky.sunDirection
-    )
+    const chunkManager = new ChunkManager(game, options)
 
     const rebuildTerrain = () => {
       chunkManager.rebuild(options)

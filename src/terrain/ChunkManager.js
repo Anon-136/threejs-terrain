@@ -10,18 +10,10 @@ export class ChunkManager {
     this.group = new THREE.Group()
     game.addObject(this.group)
     this.options = options
-    this.sunDir = sunDir
     this.builder = new ChunkBuilder()
   }
   generateChunk(x, z, w) {
-    return this.builder.allocateChunk(
-      this.group,
-      w,
-      x,
-      z,
-      this.sunDir,
-      this.options
-    )
+    return this.builder.allocateChunk(this.group, w, x, z, this.options)
   }
   update(camera) {
     // this.updateSingle(camera)
@@ -66,7 +58,7 @@ export class ChunkManager {
 
   // ! below are unused
   createChunk(x, z, w) {
-    const newChunk = Chunk(w, x, z, this.sunDir, this.options)
+    const newChunk = Chunk(w, x, z, this.options)
     newChunk.generate()
     this.group.add(newChunk.mesh)
     return newChunk

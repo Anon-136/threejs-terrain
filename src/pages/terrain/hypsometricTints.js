@@ -2,7 +2,6 @@ import { useEffect } from 'react'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { GUI } from 'dat.gui'
-import { randomRangeInt } from '../../libs/utils'
 import createGame from '../../libs/game/Game'
 
 // noise
@@ -10,63 +9,15 @@ import { sampleNoise } from '../../libs/noises/sampleNoise'
 
 // Shaders
 import * as hypsometricTints from '../../shaders/hypsometricTints'
-import { biomesHSL } from '../../libs/biomes'
 
 // Objects
 import TerrainSky from '../../libs/TerrianSky'
+import { arids, beachColor, humids, oceanColor } from '../../libs/biomes/const'
 
 const worldWidth = 256
 const worldDepth = 256
 
 export default function TerrainWithHypsometricTints() {
-  const oceanColor = {
-    point: 0.1,
-    hslColor: [biomesHSL.OCEAN.h, biomesHSL.OCEAN.s, biomesHSL.OCEAN.l],
-  }
-
-  const beachColor = {
-    point: 0.12,
-    hslColor: [biomesHSL.BEACH.h, biomesHSL.BEACH.s, biomesHSL.BEACH.l],
-  }
-
-  const arids = [
-    {
-      point: 0.0,
-      hslColor: [biomesHSL.BARE.h, biomesHSL.BARE.s, biomesHSL.BARE.l],
-    },
-    {
-      point: 0.35,
-      hslColor: [biomesHSL.DESERT.h, biomesHSL.DESERT.s, biomesHSL.DESERT.l],
-    },
-    {
-      point: 1.0,
-      hslColor: [biomesHSL.SNOW.h, biomesHSL.SNOW.s, biomesHSL.SNOW.l],
-    },
-  ]
-
-  const humids = [
-    {
-      point: 0.0,
-      hslColor: [
-        biomesHSL.FOREST_BOREAL.h,
-        biomesHSL.FOREST_BOREAL.s,
-        biomesHSL.FOREST_BOREAL.l,
-      ],
-    },
-    {
-      point: 0.5,
-      hslColor: [
-        biomesHSL.FOREST_TOPICAL.h,
-        biomesHSL.FOREST_TOPICAL.s,
-        biomesHSL.OCEAN.l,
-      ],
-    },
-    {
-      point: 1.0,
-      hslColor: [biomesHSL.SNOW.h, biomesHSL.SNOW.s, biomesHSL.SNOW.l],
-    },
-  ]
-
   useEffect(() => {
     const game = createGame()
 
