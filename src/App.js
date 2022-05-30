@@ -24,12 +24,9 @@ export default function App() {
         <Routes>
           <Route path="/test" element={<Test />} />
           <Route path="/terrain" element={<Terrain />} />
-          <Route
-            path="/terrain/hypsometric-tints"
-            element={<TerrainWithHypsometricTints />}
-          />
           <Route path="/infinite" element={<Infinite />} />
-          <Route path="/" exact element={<Home />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/" exact element={<TerrainWithHypsometricTints />} />
         </Routes>
       </div>
     </Router>
