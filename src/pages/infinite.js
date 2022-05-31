@@ -17,7 +17,7 @@ export default function Infinite() {
     // Create control
     const controls = new OrbitControls(game.camera, game.renderer.domElement)
     controls.listenToKeyEvents(window)
-    controls.keyPanSpeed = 50
+    controls.keyPanSpeed = 5
     controls.enableDamping = true
     controls.dampingFactor = 0.05
     controls.screenSpacePanning = false

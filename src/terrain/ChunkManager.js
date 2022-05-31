@@ -17,9 +17,10 @@ export class ChunkManager {
   }
   update(camera) {
     // this.updateSingle(camera)
-    this.updateQuadTree(camera)
+    // this.updateQuadTree(camera)
+    this.updateQuadTreeWithBuilder(camera)
   }
-  updateQuadTree(camera) {
+  updateQuadTreeWithBuilder(camera) {
     this.builder.update()
     if (this.builder.busy) {
       return
@@ -58,7 +59,7 @@ export class ChunkManager {
 
   // ! below are unused
   createChunk(x, z, w) {
-    const newChunk = Chunk(w, x, z, this.options)
+    const newChunk = new Chunk(w, x, z, this.options)
     newChunk.generate()
     this.group.add(newChunk.mesh)
     return newChunk
@@ -90,6 +91,38 @@ export class ChunkManager {
       const { chunk } = obj
       chunk.generate(options)
     }
+  }
+  updateQuadTree(camera) {
+    const quadTree = new QuadTree({
+      min: new THREE.Vector2(-32000, -32000),
+      max: new THREE.Vector2(32000, 32000),
+    })
+    quadTree.insert(camera.position)
+
+    const key = (x, z, w) => `${x}/${z}[${w}]`
+    const newChunks = {}
+    const children = quadTree.getChildren()
+    for (const node of children) {
+      const [x, z] = node.center
+      const w = node.size
+      const newKey = key(x, z, w)
+      newChunks[newKey] = node
+    }
+    const oldChunks = this.chunks
+    const difference = dictDifference(newChunks, oldChunks)
+    const intersection = dictIntersection(oldChunks, newChunks)
+    const recycle = dictDifference(oldChunks, newChunks)
+    this.destroy(recycle)
+    const chunks = intersection
+    for (const [key, node] of Object.entries(difference)) {
+      const [x, z] = node.center
+      const w = node.size
+      chunks[key] = {
+        params: [x, z, w],
+        chunk: this.createChunk(x, z, w),
+      }
+    }
+    this.chunks = chunks
   }
   destroy(chunks = this.chunks) {
     for (const obj of Object.values(chunks)) {

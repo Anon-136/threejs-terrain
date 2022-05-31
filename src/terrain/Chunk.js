@@ -1,9 +1,5 @@
 import * as THREE from 'three'
-import {
-  biomesColorGenerator,
-  noiseGenerator,
-  setHeightGenerator,
-} from '../libs/noises/generator'
+import { noiseGenerator, setHeightGenerator } from '../libs/noises/generator'
 import { sampleData } from '../libs/noises/sampleNoise'
 import { fragmentShader, vertexShader } from '../shaders/hypsometricTints'
 
@@ -25,13 +21,13 @@ export class Chunk {
     this.offset = [x, z]
     this.options = options
     this.material = new THREE.ShaderMaterial({
-      wireframe: options.wireframe ?? false,
+      wireframe: false,
       uniforms: options.uniforms,
       vertexShader,
       fragmentShader,
     })
   }
-  generate(options) {
+  generate(options = this.options) {
     const vertices = this.geometry.getAttribute('position')
     const heightMap = sampleData(vertices, this.offset, options.seed, options)
     for (let i = 0; i < vertices.count; i++) {
